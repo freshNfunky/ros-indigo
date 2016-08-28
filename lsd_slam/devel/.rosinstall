@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /Users/felixschaller/ros_catkin_ws/src/lsd_slam/devel/setup.sh
