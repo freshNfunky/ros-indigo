@@ -35,6 +35,7 @@
 #include <set>
 #include <valarray>
 
+#include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
 
 namespace of2 {

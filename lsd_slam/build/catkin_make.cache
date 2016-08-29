@@ -1,2 +1,0 @@
-.
--DCATKIN_DEVEL_PREFIX=/Users/felixschaller/ros_catkin_ws/src/lsd_slam/devel -DCMAKE_INSTALL_PREFIX=/Users/felixschaller/ros_catkin_ws/src/lsd_slam/install -G Unix Makefiles

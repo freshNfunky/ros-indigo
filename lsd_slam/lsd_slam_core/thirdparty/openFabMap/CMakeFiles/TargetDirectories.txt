@@ -1,4 +1,0 @@
-/Users/felixschaller/ros_catkin_ws/src/lsd_slam/lsd_slam_core/thirdparty/openFabMap/CMakeFiles/edit_cache.dir
-/Users/felixschaller/ros_catkin_ws/src/lsd_slam/lsd_slam_core/thirdparty/openFabMap/CMakeFiles/rebuild_cache.dir
-/Users/felixschaller/ros_catkin_ws/src/lsd_slam/lsd_slam_core/thirdparty/openFabMap/CMakeFiles/openFABMAPcli.dir
-/Users/felixschaller/ros_catkin_ws/src/lsd_slam/lsd_slam_core/thirdparty/openFabMap/CMakeFiles/openFABMAP.dir

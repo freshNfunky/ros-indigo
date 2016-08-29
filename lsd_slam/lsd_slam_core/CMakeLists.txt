@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.8.7)
 project(lsd_slam_core)
 
+# Set Deployment target for Mac OS X to 10.9
+if(APPLE)
+   SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Deployment target for OSX" FORCE)
+endif(APPLE)
+
 # Set the build type. Options are:
 #  Coverage : w/ debug symbols, w/o optimization, w/ code-coverage
 #  Debug : w/ debug symbols, w/o optimization
@@ -61,10 +66,10 @@ message("-- EIGEN_INCLUDE_DIR : " ${EIGEN_INCLUDE_DIR})
 
 # FabMap
 # uncomment this part to enable fabmap
-# add_subdirectory(${PROJECT_SOURCE_DIR}/thirdparty/openFabMap)
-# include_directories(${PROJECT_SOURCE_DIR}/thirdparty/openFabMap/include)
-# add_definitions("-DHAVE_FABMAP")
-# set(FABMAP_LIB openFABMAP )
+add_subdirectory(${PROJECT_SOURCE_DIR}/thirdparty/openFabMap)
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/openFabMap/include)
+add_definitions("-DHAVE_FABMAP")
+set(FABMAP_LIB openFABMAP )
 
 generate_dynamic_reconfigure_options(
   cfg/LSDDebugParams.cfg
@@ -77,15 +82,6 @@ add_message_files(
   FILES keyframeGraphMsg.msg keyframeMsg.msg
 )
 generate_messages()
-
-## Dynamic Reconfigure Services
-# include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
-# rosbuild_init()
-
-# rosbuild_find_ros_package(dynamic_reconfigure)
-# include(${dynamic_reconfigure_PACKAGE_PATH}/cmake/cfgbuild.cmake)
-# gencfg()
-# rosbuild_genmsg()
 
 catkin_package(
   LIBRARIES lsdslam
@@ -114,9 +110,7 @@ add_definitions("-DENABLE_SSE")
 # my guess due to lack of some c++0x/C++11 features
 # However gcc unable to link against libraries built by clang
 
-if(APPLE)
-   SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE STRING "Deployment target for OSX" FORCE)
-endif(APPLE)
+
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	# SET (CMAKE_C_COMPILER             "/usr/bin/clang")
@@ -136,6 +130,8 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	SET (CMAKE_RANLIB  "/usr/bin/ranlib")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -Wall -D_REENTRANT -stdlib=libc++ -std=c++11")
+  set(CMAKE_EXE_LINKER_FLAGS "-std=c++11 -Wl")
+  SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64;" CACHE STRING "Rogue")
 else()
 	# SSE flags
 	set(CMAKE_CXX_FLAGS

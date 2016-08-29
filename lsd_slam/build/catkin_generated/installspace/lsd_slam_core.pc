@@ -1,8 +1,0 @@
-prefix=/Users/felixschaller/ros_catkin_ws/src/lsd_slam/install
-
-Name: lsd_slam_core
-Description: Description of lsd_slam_core
-Version: 0.0.0
-Cflags: -I/Users/felixschaller/ros_catkin_ws/src/lsd_slam/install/include -I/usr/local/Cellar/eigen/3.2.9/include/eigen3
-Libs: -L/Users/felixschaller/ros_catkin_ws/src/lsd_slam/install/lib -llsdslam
-Requires: libg2o
