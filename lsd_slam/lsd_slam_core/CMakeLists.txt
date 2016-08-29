@@ -52,21 +52,24 @@ message("-- X11_LIBRARIES : " ${X11_LIBRARIES})
 
 # FabMap
 # uncomment this part to enable fabmap
-add_subdirectory(${PROJECT_SOURCE_DIR}/thirdparty/openFabMap)
-include_directories(${PROJECT_SOURCE_DIR}/thirdparty/openFabMap/include)
-add_definitions("-DHAVE_FABMAP")
-set(FABMAP_LIB openFABMAP )
-
-# Dynamic Reconfigure Services
-rosbuild_find_ros_package(dynamic_reconfigure)
-include(${dynamic_reconfigure_PACKAGE_PATH}/cmake/cfgbuild.cmake)
-gencfg()
-rosbuild_genmsg()
+# add_subdirectory(${PROJECT_SOURCE_DIR}/thirdparty/openFabMap)
+# include_directories(${PROJECT_SOURCE_DIR}/thirdparty/openFabMap/include)
+# add_definitions("-DHAVE_FABMAP")
+# set(FABMAP_LIB openFABMAP )
 
 generate_dynamic_reconfigure_options(
   cfg/LSDDebugParams.cfg
   cfg/LSDParams.cfg
 )
+
+## Dynamic Reconfigure Services
+# include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+# rosbuild_init()
+
+# rosbuild_find_ros_package(dynamic_reconfigure)
+# include(${dynamic_reconfigure_PACKAGE_PATH}/cmake/cfgbuild.cmake)
+# gencfg()
+# rosbuild_genmsg()
 
 catkin_package(
   LIBRARIES lsdslam
@@ -106,7 +109,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	SET (CMAKE_C_COMPILER             "/usr/local/Cellar/gcc48/4.8.5/bin/gcc-4.8")
 	SET (CMAKE_CXX_COMPILER             "/usr/local/Cellar/gcc48/4.8.5/bin/g++-4.8")
 	SET (CMAKE_AR      "/usr/local/Cellar/gcc48/4.8.5/bin/gcc-ar-4.8")
-	SET (CMAKE_LINKER  "/usr/bin/ld")
+	SET (CMAKE_LINKER  "/usr/local/Cellar/gcc48/4.8.5/bin/gcc-ld-4.8")
 	SET (CMAKE_NM      "/usr/local/Cellar/gcc48/4.8.5/bin/gcc-nm-4.8")
 	SET (CMAKE_OBJDUMP "/usr/bin/objdump")
 	SET (CMAKE_RANLIB  "/usr/local/Cellar/gcc48/4.8.5/bin/gcc-ranlib-4.8")

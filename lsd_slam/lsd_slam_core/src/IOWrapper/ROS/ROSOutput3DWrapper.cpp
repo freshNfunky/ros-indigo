@@ -2,7 +2,7 @@
 * This file is part of LSD-SLAM.
 *
 * Copyright 2013 Jakob Engel <engelj at in dot tum dot de> (Technical University of Munich)
-* For more information see <http://vision.in.tum.de/lsdslam> 
+* For more information see <http://vision.in.tum.de/lsdslam>
 *
 * LSD-SLAM is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@
 
 
 #include "std_msgs/Float32MultiArray.h"
-#include "lsd_slam_viewer/keyframeGraphMsg.h"
-#include "lsd_slam_viewer/keyframeMsg.h"
+#include "lsd_slam/keyframeGraphMsg.h"
+#include "lsd_slam/keyframeMsg.h"
 
 #include "DataStructures/Frame.h"
 #include "GlobalMapping/KeyFrameGraph.h"
@@ -44,13 +44,13 @@ ROSOutput3DWrapper::ROSOutput3DWrapper(int width, int height)
 	this->height = height;
 
 	liveframe_channel = nh_.resolveName("lsd_slam/liveframes");
-	liveframe_publisher = nh_.advertise<lsd_slam_viewer::keyframeMsg>(liveframe_channel,1);
+	liveframe_publisher = nh_.advertise<lsd_slam::keyframeMsg>(liveframe_channel,1);
 
 	keyframe_channel = nh_.resolveName("lsd_slam/keyframes");
-	keyframe_publisher = nh_.advertise<lsd_slam_viewer::keyframeMsg>(keyframe_channel,1);
+	keyframe_publisher = nh_.advertise<lsd_slam::keyframeMsg>(keyframe_channel,1);
 
 	graph_channel = nh_.resolveName("lsd_slam/graph");
-	graph_publisher = nh_.advertise<lsd_slam_viewer::keyframeGraphMsg>(graph_channel,1);
+	graph_publisher = nh_.advertise<lsd_slam::keyframeGraphMsg>(graph_channel,1);
 
 	debugInfo_channel = nh_.resolveName("lsd_slam/debug");
 	debugInfo_publisher = nh_.advertise<std_msgs::Float32MultiArray>(debugInfo_channel,1);
@@ -69,7 +69,7 @@ ROSOutput3DWrapper::~ROSOutput3DWrapper()
 
 void ROSOutput3DWrapper::publishKeyframe(Frame* f)
 {
-	lsd_slam_viewer::keyframeMsg fMsg;
+	lsd_slam::keyframeMsg fMsg;
 
 
 	boost::shared_lock<boost::shared_mutex> lock = f->getActiveLock();
@@ -113,7 +113,7 @@ void ROSOutput3DWrapper::publishKeyframe(Frame* f)
 
 void ROSOutput3DWrapper::publishTrackedFrame(Frame* kf)
 {
-	lsd_slam_viewer::keyframeMsg fMsg;
+	lsd_slam::keyframeMsg fMsg;
 
 
 	fMsg.id = kf->id();
@@ -163,7 +163,7 @@ void ROSOutput3DWrapper::publishTrackedFrame(Frame* kf)
 
 void ROSOutput3DWrapper::publishKeyframeGraph(KeyFrameGraph* graph)
 {
-	lsd_slam_viewer::keyframeGraphMsg gMsg;
+	lsd_slam::keyframeGraphMsg gMsg;
 
 	graph->edgesListsMutex.lock();
 	gMsg.numConstraints = graph->edgesAll.size();
