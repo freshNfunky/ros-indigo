@@ -25,8 +25,8 @@
 
 
 #include "std_msgs/Float32MultiArray.h"
-#include "lsd_slam/keyframeGraphMsg.h"
-#include "lsd_slam/keyframeMsg.h"
+#include "lsd_slam_core/keyframeGraphMsg.h"
+#include "lsd_slam_core/keyframeMsg.h"
 
 #include "DataStructures/Frame.h"
 #include "GlobalMapping/KeyFrameGraph.h"
@@ -44,13 +44,13 @@ ROSOutput3DWrapper::ROSOutput3DWrapper(int width, int height)
 	this->height = height;
 
 	liveframe_channel = nh_.resolveName("lsd_slam/liveframes");
-	liveframe_publisher = nh_.advertise<lsd_slam::keyframeMsg>(liveframe_channel,1);
+	liveframe_publisher = nh_.advertise<lsd_slam_core::keyframeMsg>(liveframe_channel,1);
 
 	keyframe_channel = nh_.resolveName("lsd_slam/keyframes");
-	keyframe_publisher = nh_.advertise<lsd_slam::keyframeMsg>(keyframe_channel,1);
+	keyframe_publisher = nh_.advertise<lsd_slam_core::keyframeMsg>(keyframe_channel,1);
 
 	graph_channel = nh_.resolveName("lsd_slam/graph");
-	graph_publisher = nh_.advertise<lsd_slam::keyframeGraphMsg>(graph_channel,1);
+	graph_publisher = nh_.advertise<lsd_slam_core::keyframeGraphMsg>(graph_channel,1);
 
 	debugInfo_channel = nh_.resolveName("lsd_slam/debug");
 	debugInfo_publisher = nh_.advertise<std_msgs::Float32MultiArray>(debugInfo_channel,1);
@@ -69,7 +69,7 @@ ROSOutput3DWrapper::~ROSOutput3DWrapper()
 
 void ROSOutput3DWrapper::publishKeyframe(Frame* f)
 {
-	lsd_slam::keyframeMsg fMsg;
+	lsd_slam_core::keyframeMsg fMsg;
 
 
 	boost::shared_lock<boost::shared_mutex> lock = f->getActiveLock();
@@ -113,7 +113,7 @@ void ROSOutput3DWrapper::publishKeyframe(Frame* f)
 
 void ROSOutput3DWrapper::publishTrackedFrame(Frame* kf)
 {
-	lsd_slam::keyframeMsg fMsg;
+	lsd_slam_core::keyframeMsg fMsg;
 
 
 	fMsg.id = kf->id();
@@ -163,7 +163,7 @@ void ROSOutput3DWrapper::publishTrackedFrame(Frame* kf)
 
 void ROSOutput3DWrapper::publishKeyframeGraph(KeyFrameGraph* graph)
 {
-	lsd_slam::keyframeGraphMsg gMsg;
+	lsd_slam_core::keyframeGraphMsg gMsg;
 
 	graph->edgesListsMutex.lock();
 	gMsg.numConstraints = graph->edgesAll.size();

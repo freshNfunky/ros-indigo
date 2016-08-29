@@ -11,6 +11,7 @@ set(CMAKE_BUILD_TYPE Release)
 
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
+  message_generation
   #lsd_slam_viewer
   cv_bridge
   dynamic_reconfigure
@@ -41,14 +42,22 @@ ENDIF(CSPARSE_FOUND)
 find_package(X11)
 if(NOT X11_FOUND)
 	message(FATAL_ERROR "Failed to find X11")
+else(NOT X11_FOUND)
+  INCLUDE_DIRECTORIES ( ${X11_INCLUDE_DIR} )
+  LINK_LIBRARIES ( ${X11_LIBRARIES} )
+  MESSAGE ( STATUS " X11_INCLUDE_DIR: " ${X11_INCLUDE_DIR} )
+  MESSAGE ( STATUS " X11_LIBRARIES: " ${X11_LIBRARIES} )
 endif(NOT X11_FOUND)
+
+
+
 
 message("-- CHOLMOD_INCLUDE_DIR : " ${CHOLMOD_INCLUDE_DIR})
 message("-- CSPARSE_INCLUDE_DIR : " ${CSPARSE_INCLUDE_DIR})
 message("-- G2O_INCLUDE_DIR : " ${G2O_INCLUDE_DIR})
 message("-- EIGEN3_INCLUDE_DIR : " ${EIGEN3_INCLUDE_DIR})
 message("-- EIGEN_INCLUDE_DIR : " ${EIGEN_INCLUDE_DIR})
-message("-- X11_LIBRARIES : " ${X11_LIBRARIES})
+# message("-- X11_LIBRARIES : " ${X11_LIBRARIES})
 
 # FabMap
 # uncomment this part to enable fabmap
@@ -61,6 +70,13 @@ generate_dynamic_reconfigure_options(
   cfg/LSDDebugParams.cfg
   cfg/LSDParams.cfg
 )
+
+#Message Files Generation
+add_message_files(
+  DIRECTORY msg
+  FILES keyframeGraphMsg.msg keyframeMsg.msg
+)
+generate_messages()
 
 ## Dynamic Reconfigure Services
 # include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
@@ -97,6 +113,11 @@ add_definitions("-DENABLE_SSE")
 # On Mac OSX it is not possible to build with at least clang shipped by Apple
 # my guess due to lack of some c++0x/C++11 features
 # However gcc unable to link against libraries built by clang
+
+if(APPLE)
+   SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE STRING "Deployment target for OSX" FORCE)
+endif(APPLE)
+
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	# SET (CMAKE_C_COMPILER             "/usr/bin/clang")
 	# SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++")
@@ -106,15 +127,15 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	#     SET (CMAKE_OBJDUMP "/usr/bin/llvm-objdump")
 	#     SET (CMAKE_RANLIB  "/usr/bin/llvm-ranlib")
 	# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ")
-	SET (CMAKE_C_COMPILER             "/usr/local/Cellar/gcc48/4.8.5/bin/gcc-4.8")
-	SET (CMAKE_CXX_COMPILER             "/usr/local/Cellar/gcc48/4.8.5/bin/g++-4.8")
-	SET (CMAKE_AR      "/usr/local/Cellar/gcc48/4.8.5/bin/gcc-ar-4.8")
-	SET (CMAKE_LINKER  "/usr/local/Cellar/gcc48/4.8.5/bin/gcc-ld-4.8")
-	SET (CMAKE_NM      "/usr/local/Cellar/gcc48/4.8.5/bin/gcc-nm-4.8")
+	SET (CMAKE_C_COMPILER             "/usr/bin/gcc")
+	SET (CMAKE_CXX_COMPILER             "/usr/bin/g++")
+	SET (CMAKE_AR      "/usr/bin/ar")
+	SET (CMAKE_LINKER  "/usr/bin/ld")
+	SET (CMAKE_NM      "/usr/bin/nm")
 	SET (CMAKE_OBJDUMP "/usr/bin/objdump")
-	SET (CMAKE_RANLIB  "/usr/local/Cellar/gcc48/4.8.5/bin/gcc-ranlib-4.8")
+	SET (CMAKE_RANLIB  "/usr/bin/ranlib")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -Wall -D_REENTRANT --std=c++0x")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -Wall -D_REENTRANT -stdlib=libc++ -std=c++11")
 else()
 	# SSE flags
 	set(CMAKE_CXX_FLAGS
@@ -163,6 +184,7 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/thirdparty/Sophus
   ${CSPARSE_INCLUDE_DIR} #Has been set by SuiteParse
   ${CHOLMOD_INCLUDE_DIR} #Has been set by SuiteParse
+#  /opt/X11/include
 )
 
 
