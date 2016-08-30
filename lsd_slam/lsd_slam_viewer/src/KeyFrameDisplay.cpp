@@ -2,7 +2,7 @@
 * This file is part of LSD-SLAM.
 *
 * Copyright 2013 Jakob Engel <engelj at in dot tum dot de> (Technical University of Munich)
-* For more information see <http://vision.in.tum.de/lsdslam> 
+* For more information see <http://vision.in.tum.de/lsdslam>
 *
 * LSD-SLAM is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -24,15 +24,17 @@
 #include <stdio.h>
 #include "settings.h"
 
-#ifdef __MACH__
-	//#include <GL/glx.h>
-	#include <GL/gl.h>
-	#include <GL/glu.h>
+
+#if defined(__APPLE__)
+		// #include <OpenGL/glx.h>
+		#include <OpenGL/gl.h>
+		#include <OpenGL/glu.h>
 #else
-	#include <GL/glx.h>
-	#include <GL/gl.h>
-	#include <GL/glu.h>
+		#include <GL/glx.h>
+		#include <GL/gl.h>
+		#include <GL/glu.h>
 #endif
+
 
 #include "opencv2/opencv.hpp"
 
@@ -404,4 +406,3 @@ void KeyFrameDisplay::drawPC(float pointSize, float alpha)
 		glLightfv (GL_LIGHT0, GL_AMBIENT_AND_DIFFUSE, LightColor);
 	}
 }
-

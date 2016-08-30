@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.4.6)
 project(lsd_slam_viewer)
 
+# Set Deployment target for Mac OS X to 10.9
+if(APPLE)
+   SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Deployment target for OSX" FORCE)
+endif(APPLE)
+
 # Set the build type. Options are:
 #  Coverage : w/ debug symbols, w/o optimization, w/ code-coverage
 #  Debug : w/ debug symbols, w/o optimization
@@ -16,6 +21,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   cv_bridge
+  message_generation
   dynamic_reconfigure
   sensor_msgs
   roscpp
@@ -48,11 +54,13 @@ endif(NOT GLUT_FOUND)
 # FIND OPENGL
 #########################################################
 find_package(OpenGL REQUIRED)
-include_directories(${OpenGL_INCLUDE_DIRS})
-link_directories(${OpenGL_LIBRARY_DIRS})
+include_directories(${OpenGL_INCLUDE_DIR})
+link_directories(${OpenGL_LIBRARY_DIR})
 add_definitions(${OpenGL_DEFINITIONS})
 if(NOT OPENGL_FOUND)
     message(ERROR " OPENGL not found!")
+else (NOT OPENGL_FOUND)
+    message("-- OPENGL found!")
 endif(NOT OPENGL_FOUND)
 
 #########################################################
@@ -65,21 +73,23 @@ endif(NOT X11_FOUND)
 
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	include_directories(/usr/X11R6/include/)
-	link_directories(/usr/X11R6/lib)
+	include_directories(/usr/X11/include/)
+	link_directories(/usr/X11/lib)
 	SET(EXTRA_LIBS GL X11 GLU glut)
 	#target_link_libraries(main ${EXTRA_LIBS})
 #else()
 #	SET(EXTRA_LIBS GL glut GLU)
 endif()
 
-
+message("-- OpenGL_INCLUDE_DIRS : " ${OpenGL_INCLUDE_DIR})
+message("-- OpenGL_LIBRARY_DIRS : " ${OpenGL_LIBRARY_DIR})
+message("-- OpenGL_DEFINITIONS : " ${OpenGL_DEFINITIONA})
 message("-- EIGEN3_INCLUDE_DIR : " ${EIGEN3_INCLUDE_DIR})
 message("-- EIGEN_INCLUDE_DIR : " ${EIGEN_INCLUDE_DIR})
 message("-- X11_LIBRARIES : " ${X11_LIBRARIES})
 
 include_directories(${QGLVIEWER_INCLUDE_DIR}
-		    ${catkin_INCLUDE_DIRS} 
+		    ${catkin_INCLUDE_DIRS}
 		    ${EIGEN_INCLUDE_DIR}
 		    ${QT_INCLUDES} )
 
@@ -88,15 +98,25 @@ include_directories(${QGLVIEWER_INCLUDE_DIR}
 # my guess due to lack of some C++11 features
 # However gcc unable to link against libraries built by clang
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	SET (CMAKE_C_COMPILER             "/usr/local/bin/gcc")
-	SET (CMAKE_CXX_COMPILER             "/usr/local/bin/g++")
-	SET (CMAKE_AR      "/usr/local/bin/ar")
-	SET (CMAKE_LINKER  "/usr/local/bin/ld")
-	SET (CMAKE_NM      "/usr/local/bin/nm")
-	SET (CMAKE_OBJDUMP "/usr/local/bin/objdump")
-	SET (CMAKE_RANLIB  "/usr/local/bin/ranlib")
+	SET (CMAKE_C_COMPILER             "/usr/bin/clang")
+	SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++")
+	    SET (CMAKE_AR      "/usr/bin/llvm-ar")
+	    SET (CMAKE_LINKER  "/usr/bin/llvm-ld")
+	    SET (CMAKE_NM      "/usr/bin/llvm-nm")
+	    SET (CMAKE_OBJDUMP "/usr/bin/llvm-objdump")
+	    SET (CMAKE_RANLIB  "/usr/bin/llvm-ranlib")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -Wall -D_REENTRANT --std=c++0x")
+	# SET (CMAKE_C_COMPILER             "/usr/bin/gcc")
+	# SET (CMAKE_CXX_COMPILER             "/usr/bin/g++")
+	# SET (CMAKE_AR      "/usr/bin/ar")
+	# SET (CMAKE_LINKER  "/usr/bin/ld")
+	# SET (CMAKE_NM      "/usr/bin/nm")
+	# SET (CMAKE_OBJDUMP "/usr/bin/objdump")
+	# SET (CMAKE_RANLIB  "/usr/bin/ranlib")
+	# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -Wall -D_REENTRANT -stdlib=libc++ -std=c++11")
+  set(CMAKE_EXE_LINKER_FLAGS "-std=c++11 -Wl")
+  SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64;" CACHE STRING "Rogue")
 else()
 	# SSE flags
 	set(CMAKE_CXX_FLAGS
@@ -133,14 +153,14 @@ DEPENDS
 )
 
 # Sources files
-set(SOURCE_FILES         
+set(SOURCE_FILES
   src/PointCloudViewer.cpp
   src/KeyFrameDisplay.cpp
   src/KeyFrameGraphDisplay.cpp
   src/settings.cpp
 )
 
-set(HEADER_FILES     
+set(HEADER_FILES
   src/PointCloudViewer.h
   src/KeyFrameDisplay.h
   src/KeyFrameGraphDisplay.h
@@ -150,11 +170,11 @@ set(HEADER_FILES
 
 include_directories(
   ${PROJECT_SOURCE_DIR}/thirdparty/Sophus
-)  
+)
 
 add_executable(viewer src/main_viewer.cpp ${SOURCE_FILES} ${HEADER_FILES})
 target_link_libraries(viewer ${QGLViewer_LIBRARIES}
-			     ${QGLVIEWER_LIBRARY} 
+			     ${QGLVIEWER_LIBRARY}
 			     ${catkin_LIBRARIES}
 			     ${Boost_LIBRARIES}
 			     ${QT_LIBRARIES}
@@ -171,4 +191,3 @@ target_link_libraries(viewer ${QGLViewer_LIBRARIES}
 #			     ${QT_LIBRARIES}
 #			     GL glut GLU
 #		      )
-

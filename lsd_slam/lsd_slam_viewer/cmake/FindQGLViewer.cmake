@@ -4,6 +4,7 @@ include(${QT_USE_FILE})
 
 FIND_PATH(QGLVIEWER_INCLUDE_DIR qglviewer.h
     /usr/include/QGLViewer
+    /usr/local/Cellar/libqglviewer/2.6.3/lib/QGLViewer.framework/Headers 
     /opt/local/include/QGLViewer
     /usr/local/include/QGLViewer
     /sw/include/QGLViewer
@@ -44,4 +45,3 @@ endif()
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(QGLVIEWER DEFAULT_MSG
   QGLVIEWER_INCLUDE_DIR QGLVIEWER_LIBRARY)
-

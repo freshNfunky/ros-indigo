@@ -24,8 +24,8 @@
 #define KEYFRAMEGRAPHDISPLAY_H_
 
 
-#include "lsd_slam_core/keyframeGraphMsg.h"
-#include "lsd_slam_core/keyframeMsg.h"
+#include "lsd_slam_viewer/keyframeGraphMsg.h"
+#include "lsd_slam_viewer/keyframeMsg.h"
 #include "boost/thread.hpp"
 
 class KeyFrameDisplay;
