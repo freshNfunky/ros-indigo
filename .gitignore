@@ -1,3 +1,5 @@
 geometric_shapes/
 /build/
 /devel/
+
+/lsd_slam/data/
